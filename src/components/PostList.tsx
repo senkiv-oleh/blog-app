@@ -1,10 +1,15 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { usePosts } from '@/hooks/swr/usePosts'
 import PostItem from './PostItem'
+import { usePosts } from '@/hooks/swr/usePosts'
+import { useAppDispatch } from '@/hooks/redux'
+import { deletePost } from '@/store/features/postsSlice'
+
 
 export default function PostList () {
+  const dispatch = useAppDispatch()
+
   const router = useRouter()
 
   const { posts, isLoading } = usePosts()
@@ -14,11 +19,13 @@ export default function PostList () {
   }
 
   const handleEdit = (id: string) => {
-    console.log('Edit post with id:', id)
+    router.push(`/post/${id}/edit`)
   }
 
   const handleDelete = (id: string) => {
-    console.log('Delete post with id:', id)
+    if (confirm('Are you sure you want to delete this post?')) {
+      dispatch(deletePost(id))
+    }
   }
 
   if (isLoading)

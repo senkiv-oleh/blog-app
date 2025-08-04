@@ -2,12 +2,13 @@
 
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { postSchema, PostFormData } from '@/utils/validationPost'
+import { postSchema, PostFormData } from '@/validation/validationPost'
 import { useAppDispatch } from '@/hooks/redux'
-import { addPost } from '@/store/features/postsSlice'
+import { addPost, updatePost } from '@/store/features/postsSlice'
 import { useRouter } from 'next/navigation'
+import { Post } from '@/types/post'
 
-const CreatePostForm = () => {
+const PostForm = ({ post }: { post?: Post }) => {
   const dispatch = useAppDispatch()
   const router = useRouter()
 
@@ -17,23 +18,31 @@ const CreatePostForm = () => {
     reset,
     formState: { errors }
   } = useForm<PostFormData>({
-    resolver: zodResolver(postSchema)
+    resolver: zodResolver(postSchema),
+    defaultValues: post || { title: '', content: '' }
   })
 
   const onSubmit = async (data: PostFormData) => {
-    console.log('Form submitted:', data)
-    await dispatch(addPost({ ...data, author: 'user_1' }))
-    reset()
-    router.push('/')
+    try {
+      if (post?.id) {
+        await dispatch(updatePost({ id: post.id, data }))
+      } else {
+        await dispatch(addPost({ ...data, author: 'user_1' }))
+        reset()
+      }
+      router.push('/')
+    } catch (error) {
+      console.error('Form submission failed:', error)
+    }
   }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className='bg-white p-8 rounded-xl shadow-lg max-w-xl mx-auto mt-8 space-y-6'
+      className='bg-white p-8 rounded-xl shadow-lg mx-auto mt-8 space-y-6'
     >
       <h2 className='text-2xl font-bold text-gray-800 text-center'>
-        Fill out the form below to create your post.
+        {post?.id ? 'Edit your post' : 'Fill out the form below to create your post.'}
       </h2>
 
       <div>
@@ -73,10 +82,10 @@ const CreatePostForm = () => {
         type='submit'
         className='w-full bg-gradient-to-r from-purple-500 to-pink-500 text-white py-3 rounded-lg text-lg font-semibold shadow-md hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all'
       >
-        Create Post
+        {post?.id ? 'Update Post' : 'Create Post'}
       </button>
     </form>
   )
 }
 
-export default CreatePostForm
+export default PostForm

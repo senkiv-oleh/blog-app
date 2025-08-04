@@ -6,7 +6,9 @@ import {
   collection,
   getDoc,
   doc,
-  serverTimestamp
+  serverTimestamp,
+  updateDoc,
+  deleteDoc
 } from 'firebase/firestore'
 
 const initialState: PostsState = {
@@ -35,14 +37,50 @@ export const addPost = createAsyncThunk(
   }
 )
 
+export const updatePost = createAsyncThunk(
+  'posts/updatePost',
+  async ({ id, data }: { id: string; data: Partial<Post> }) => {
+    const ref = doc(db, 'posts', id)
+    await updateDoc(ref, { ...data, updatedAt: serverTimestamp() })
+
+    return {
+      id,
+      data,
+      updatedAt: new Date().toISOString()
+    }
+  }
+)
+
+export const deletePost = createAsyncThunk(
+  'posts/deletePost',
+  async (id: string) => {
+    const ref = doc(db, 'posts', id)
+    await deleteDoc(ref)
+
+    console.log(`Post with ID ${id} deleted successfully`)
+    return id
+  }
+)
+
 const postsSlice = createSlice({
   name: 'posts',
   initialState,
   reducers: {},
   extraReducers: builder => {
-    builder.addCase(addPost.fulfilled, (state, action) => {
-      state.items.unshift(action.payload)
-    })
+    builder
+      .addCase(addPost.fulfilled, (state, action) => {
+        state.items.unshift(action.payload)
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        const { id, data } = action.payload
+        const index = state.items.findIndex(p => p.id === id)
+        if (index !== -1) {
+          state.items[index] = { ...state.items[index], ...data }
+        }
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        state.items = state.items.filter(p => p.id !== action.payload)
+      })
   }
 })
 

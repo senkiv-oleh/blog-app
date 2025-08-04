@@ -1,4 +1,4 @@
-import CreatePostForm from '@/components/CreatePostForm'
+import PostForm from '@/components/PostForm'
 import Link from 'next/link'
 
 export default function CreatePage () {
@@ -13,7 +13,7 @@ export default function CreatePage () {
       <h1 className='text-3xl font-bold mb-6 text-gray-800 text-center'>
         Create a New Post
       </h1>
-      <CreatePostForm />
+      <PostForm />
     </main>
   )
 }
