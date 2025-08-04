@@ -3,11 +3,12 @@ import { fetchPosts } from '@/utils/fetchers'
 import { Post } from '@/types/post'
 
 export const usePosts = () => {
-  const { data, error, isLoading } = useSWR<Post[]>('posts', fetchPosts)
+  const { data, error, isLoading, mutate } = useSWR<Post[]>('posts', fetchPosts)
 
   return {
     posts: data,
     isLoading,
-    isError: !!error
+    isError: !!error,
+    mutate
   }
 }

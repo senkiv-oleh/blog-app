@@ -3,6 +3,8 @@
 import Link from 'next/link'
 import { usePost } from '@/hooks/swr/usePost'
 import { formatDate } from '@/utils/formatDate'
+import CommentList from './comments/CommentList'
+import CommentForm from './comments/CommentForm'
 
 export default function PostDetails ({ id }: { id: string }) {
   const { post, isLoading } = usePost(id)
@@ -66,7 +68,7 @@ export default function PostDetails ({ id }: { id: string }) {
             </h2>
 
             <div className='bg-white space-y-6'>
-              {/* <CommentList /> */}
+              <CommentList postId={post.id} />
 
               <hr className='border-t border-gray-200' />
 
@@ -74,7 +76,7 @@ export default function PostDetails ({ id }: { id: string }) {
                 <h3 className='text-lg font-semibold text-gray-800 mb-2'>
                   Add a comment
                 </h3>
-                {/* <CommentForm /> */}
+                <CommentForm postId={post.id} />
               </div>
             </div>
           </div>

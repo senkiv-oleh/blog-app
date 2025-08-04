@@ -6,13 +6,12 @@ import { usePosts } from '@/hooks/swr/usePosts'
 import { useAppDispatch } from '@/hooks/redux'
 import { deletePost } from '@/store/features/postsSlice'
 
-
 export default function PostList () {
   const dispatch = useAppDispatch()
 
   const router = useRouter()
 
-  const { posts, isLoading } = usePosts()
+  const { posts, isLoading, mutate } = usePosts()
 
   const handleReadMore = (id: string) => {
     router.push(`/post/${id}`)
@@ -26,6 +25,7 @@ export default function PostList () {
     if (confirm('Are you sure you want to delete this post?')) {
       dispatch(deletePost(id))
     }
+    mutate()
   }
 
   if (isLoading)
