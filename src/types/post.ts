@@ -8,3 +8,9 @@ export interface Post {
   updatedAt?: Timestamp | null | string
   author: string
 }
+
+
+export interface PostsState {
+  items: Post[]
+  loading: boolean
+}
