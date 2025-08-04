@@ -16,7 +16,7 @@ This project is a full-featured web application developed as an example of a blo
 
 ## Live Demo
 
-You can view the live demo of the application at [Blog App Demo](https://your-live-demo-url.com).
+You can view the live demo of the application at [Blog App Demo](https://blog-app-y4sl.vercel.app/).
 
 
 
